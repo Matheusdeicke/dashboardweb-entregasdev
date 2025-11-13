@@ -1,7 +1,6 @@
 import 'package:dashboard_entregasdev/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
-
 class SidebarWidget extends StatelessWidget {
   final int selectedIndex;
   final Function(int) onIndexChanged;
