@@ -6,8 +6,6 @@ class DashboardSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final textColor = Colors.white.withOpacity(0.9);
-    final subTextColor = Colors.white.withOpacity(0.5);
 
     return Container(
       color: AppColors.bgColor,
@@ -20,7 +18,7 @@ class DashboardSection extends StatelessWidget {
             children: [
               Text(
                 "DASHBOARD",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400, color: subTextColor, letterSpacing: 1.2),
+                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400, color: AppColors.cinza, letterSpacing: 1.2),
               ),
             ],
           ),
@@ -33,14 +31,14 @@ class DashboardSection extends StatelessWidget {
                 title: "Entregadores online",
                 value: "1",
                 cardColor: AppColors.cardColor,
-                textColor: textColor,
+                textColor: AppColors.cinza,
               ),
               const SizedBox(width: 20),
               _cardStats(
                 title: "Meus pedidos",
                 value: "1",
                 cardColor: AppColors.cardColor,
-                textColor: textColor,
+                textColor: AppColors.cinza,
               ),
             ],
           ),
@@ -53,7 +51,7 @@ class DashboardSection extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16, 
                 fontWeight: FontWeight.bold, 
-                color: subTextColor,
+                color: AppColors.cinza,
                 letterSpacing: 0.5
               ),
             ),
@@ -64,15 +62,14 @@ class DashboardSection extends StatelessWidget {
           Expanded(
             child: GridView.builder(
               itemCount: 1,
-              // Define o layout do grid
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
                 crossAxisSpacing: 20,
                 mainAxisSpacing: 20,
-                childAspectRatio: 3,
+                childAspectRatio: 2,
               ),
               itemBuilder: (context, index) {
-                return _cardPedidos(index, AppColors.cardColor, textColor, subTextColor);
+                return _cardPedidos(index, AppColors.cardColor, AppColors.cinza, AppColors.cinza);
               },
             ),
           )
