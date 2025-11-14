@@ -1,3 +1,7 @@
+// NA TELA DE HOME VAI TER DOIS WIDGETS ARREDONDADOS
+// UM MOSTRANDO O NÚMERO DE ENTREGADORES ATIVOS E OUTRO MOSTRANDO O NÚMERO PEDIDOS
+// ABAIXO VAI TER UM CONTAINER MOSTRANDO TODOS OS PEDIDOS EM ANDAMENTO
+
 import 'package:flutter/material.dart';
 import 'package:dashboard_entregasdev/theme/app_colors.dart';
 import 'package:dashboard_entregasdev/widgets/sidebar_widget.dart';
@@ -35,7 +39,7 @@ class _HomePageState extends State<HomePage> {
     const Center(
       child: Text(
         'Sair'
-      )
+      ), 
     ),
   ];
 
