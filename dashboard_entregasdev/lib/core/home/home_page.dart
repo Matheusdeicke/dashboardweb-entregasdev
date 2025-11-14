@@ -1,10 +1,9 @@
-// NA TELA DE HOME VAI TER DOIS WIDGETS ARREDONDADOS
-// UM MOSTRANDO O NÚMERO DE ENTREGADORES ATIVOS E OUTRO MOSTRANDO O NÚMERO PEDIDOS
-// ABAIXO VAI TER UM CONTAINER MOSTRANDO TODOS OS PEDIDOS EM ANDAMENTO
-
-import 'package:flutter/material.dart';
+import 'package:dashboard_entregasdev/core/home/dashboard_section.dart';
+import 'package:dashboard_entregasdev/core/home/home_controller.dart';
 import 'package:dashboard_entregasdev/theme/app_colors.dart';
 import 'package:dashboard_entregasdev/widgets/sidebar_widget.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -14,34 +13,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final controller = Modular.get<HomeController>();
   int _selectedIndex = 0;
 
   final List<Widget> _pages = [
-
-    const Center(
-      child: Text(
-        'Dashboard',
-      ),
-    ),
-
-    const Center(
-      child: Text(
-        'Lista de Entregadores'
-      )
-    ),
-
-    const Center(
-      child: Text(
-        'Minhas Solicitações'
-      )
-    ),
-
-    const Center(
-      child: Text(
-        'Sair'
-      ), 
-    ),
+    const DashboardSection(),
+    const Center(child: Text('Lista de Entregadores')),
+    const Center(child: Text('Minhas Solicitações')),
   ];
+
+  void _logout() async {
+    await controller.logout();
+    Modular.to.navigate('/');
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,18 +40,18 @@ class _HomePageState extends State<HomePage> {
                 _selectedIndex = index;
               });
             },
+            onLogout: _logout,
           ),
           
           Expanded(
             child: Container(
               decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
-                  topLeft: Radius.circular(20),
-                  bottomLeft: Radius.circular(20),
+                  topLeft: Radius.circular(30),
+                  bottomLeft: Radius.circular(30),
                 ),
                 color: AppColors.cinza,
               ),
-              // não recarrega ao trocar de página
               child: IndexedStack(
                 index: _selectedIndex,
                 children: _pages,
