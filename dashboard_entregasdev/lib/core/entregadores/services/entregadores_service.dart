@@ -17,4 +17,6 @@ class EntregadoresService {
             .map((doc) => EntregadoresModel.fromMap(doc.data() as Map<String, dynamic>))
             .toList());
   }
+
+  // Verificar como eu vou pegar o status real do entregador
 }
