@@ -1,17 +1,29 @@
+import 'package:dashboard_entregasdev/core/entregadores/entregadores_controller.dart';
+import 'package:dashboard_entregasdev/core/entregadores/models/entregadores_model.dart';
 import 'package:dashboard_entregasdev/theme/app_colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_modular/flutter_modular.dart';
 
 class EntregadoresPage extends StatelessWidget {
   const EntregadoresPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final controller = Modular.get<EntregadoresController>();
+
     return Container(
-      color: AppColors.bgColor,
-      padding: EdgeInsets.all(32.0),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.only(
+          topLeft: Radius.circular(30),
+          bottomLeft: Radius.circular(30),
+        ),
+        color: AppColors.bgColor,
+      ),
+      padding: const EdgeInsets.all(32.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // TÍTULO
           Text(
             'ENTREGADORES',
             style: TextStyle(
@@ -21,9 +33,9 @@ class EntregadoresPage extends StatelessWidget {
               letterSpacing: 1.2,
             ),
           ),
-          SizedBox(height: 24),
+          const SizedBox(height: 24),
 
-          // Tabela 
+          // TABELA
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -34,12 +46,12 @@ class EntregadoresPage extends StatelessWidget {
               child: Column(
                 children: [
                   Padding(
-                    padding: EdgeInsets.symmetric(
+                    padding: const EdgeInsets.symmetric(
                       horizontal: 24,
                       vertical: 12,
                     ),
                     child: Row(
-                      children: [
+                      children: const [
                         Expanded(
                           flex: 3,
                           child: Text(
@@ -76,59 +88,100 @@ class EntregadoresPage extends StatelessWidget {
                       ],
                     ),
                   ),
-                  // Linha 
-                  Divider(
-                    color: Colors.white12,
-                    height: 1,
-                    thickness: 1,
-                  ),
+                  const Divider(color: Colors.white12, height: 1, thickness: 1),
 
-                  Padding(
-                    padding: EdgeInsets.symmetric(
-                      horizontal: 24,
-                      vertical: 10,
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                            'João da Silva',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 3,
-                          child: Text(
-                            'Rua Prudente',
-                            style: TextStyle(
-                              color: Colors.white70,
-                              fontSize: 13,
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Align(
-                            alignment: Alignment.centerLeft,
+                  Expanded(
+                    child: StreamBuilder<List<EntregadoresModel>>(
+                      stream: controller.entregadoresStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+
+                        if (snapshot.hasError) {
+                          return Center(
                             child: Text(
-                              'DISPONÍVEL',
+                              'Erro ao carregar entregadores',
+                              style: TextStyle(color: Colors.red[300]),
+                            ),
+                          );
+                        }
+
+                        final entregadores = snapshot.data ?? [];
+
+                        if (entregadores.isEmpty) {
+                          return const Center(
+                            child: Text(
+                              'Nenhum entregador encontrado.',
                               style: TextStyle(
-                                color: Colors.greenAccent,
+                                color: Colors.white54,
                                 fontSize: 13,
-                                fontWeight: FontWeight.w500,
                               ),
                             ),
+                          );
+                        }
+
+                        return ListView.separated(
+                          itemCount: entregadores.length,
+                          separatorBuilder: (_, __) => const Divider(
+                            color: Colors.white10,
+                            height: 1,
+                            thickness: 0.7,
                           ),
-                        ),
-                      ],
+                          itemBuilder: (context, index) {
+                            final e = entregadores[index];
+                            return Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 24,
+                                vertical: 10,
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    flex: 3,
+                                    child: Text(
+                                      e.nome,
+                                      style: const TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 3,
+                                    child: Text(
+                                      e.localizacao,
+                                      style: const TextStyle(
+                                        color: Colors.white70,
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    flex: 2,
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        e.status,
+                                        style: TextStyle(
+                                          color: _statusColor(e.status),
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        );
+                      },
                     ),
                   ),
-
-                  Spacer(),
                 ],
               ),
             ),
@@ -136,5 +189,19 @@ class EntregadoresPage extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Color _statusColor(String status) {
+    switch (status.toUpperCase()) {
+      case 'DISPONÍVEL':
+        return Colors.greenAccent;
+      case 'EM COLETA':
+      case 'ENTREGANDO':
+        return Colors.orangeAccent;
+      case 'OFF':
+      case 'OFFLINE':
+      default:
+        return Colors.white60;
+    }
   }
 }

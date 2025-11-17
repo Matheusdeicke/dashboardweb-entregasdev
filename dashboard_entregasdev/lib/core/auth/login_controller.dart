@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dashboard_entregasdev/core/auth/auth_service.dart';
+import 'package:dashboard_entregasdev/core/auth/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 

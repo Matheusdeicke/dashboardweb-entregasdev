@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:dashboard_entregasdev/core/auth/auth_service.dart';
+import 'package:dashboard_entregasdev/core/auth/services/auth_service.dart';
 import 'package:dashboard_entregasdev/core/auth/login_controller.dart';
 import 'package:dashboard_entregasdev/core/auth/login_page.dart';
 import 'package:dashboard_entregasdev/core/core_module.dart';

@@ -1,3 +1,4 @@
+import 'package:dashboard_entregasdev/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class SidebarWidget extends StatelessWidget {
@@ -16,7 +17,7 @@ class SidebarWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       width: 250,
-      color: const Color(0xFF000000),
+      color: AppColors.preto,
       padding: const EdgeInsets.symmetric(vertical: 30, horizontal: 10),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -1,4 +1,4 @@
-import 'package:dashboard_entregasdev/core/auth/auth_service.dart';
+import 'package:dashboard_entregasdev/core/auth/services/auth_service.dart';
 import 'package:dashboard_entregasdev/core/home/service/presence_service.dart';
 import 'package:flutter/cupertino.dart';
 

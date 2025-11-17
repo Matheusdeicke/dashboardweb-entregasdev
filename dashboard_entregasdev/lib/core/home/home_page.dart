@@ -1,6 +1,7 @@
 import 'package:dashboard_entregasdev/core/entregadores/entregadores_page.dart';
 import 'package:dashboard_entregasdev/core/home/dashboard_section.dart';
 import 'package:dashboard_entregasdev/core/home/home_controller.dart';
+import 'package:dashboard_entregasdev/core/solicitacoes/solicitacoes_page.dart';
 import 'package:dashboard_entregasdev/theme/app_colors.dart';
 import 'package:dashboard_entregasdev/widgets/sidebar_widget.dart';
 import 'package:flutter/material.dart';
@@ -28,12 +29,7 @@ class _HomePageState extends State<HomePage> {
         entregadoresOnlineStream: controller.entregadoresOnlineStream,
       ),
       const EntregadoresPage(),
-      const Center(
-        child: Text(
-          'Minhas Solicitações',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
+      const SolicitacoesPage(),
     ];
   }
 

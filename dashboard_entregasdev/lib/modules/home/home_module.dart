@@ -1,5 +1,8 @@
-import 'package:dashboard_entregasdev/core/auth/auth_service.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dashboard_entregasdev/core/auth/services/auth_service.dart';
 import 'package:dashboard_entregasdev/core/core_module.dart';
+import 'package:dashboard_entregasdev/core/entregadores/entregadores_controller.dart';
+import 'package:dashboard_entregasdev/core/entregadores/services/entregadores_service.dart';
 import 'package:dashboard_entregasdev/core/home/home_controller.dart';
 import 'package:dashboard_entregasdev/core/home/home_page.dart';
 import 'package:dashboard_entregasdev/core/home/service/presence_service.dart';
@@ -19,6 +22,14 @@ class HomeModule extends Module {
         i.get<AuthService>(),
         i.get<PresenceService>(),
       ),
+    );
+
+    i.addLazySingleton<EntregadoresService>(
+      () => EntregadoresService(i.get<FirebaseFirestore>()),
+    );
+
+    i.addLazySingleton<EntregadoresController>(
+      () => EntregadoresController(i.get<EntregadoresService>()),
     );
   }
 
