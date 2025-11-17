@@ -32,6 +32,10 @@ class DashboardSection extends StatelessWidget {
                   letterSpacing: 1.2,
                 ),
               ),
+            Icon( Icons.dashboard,
+                color: AppColors.cinza,
+                size: 28,
+              ),
             ],
           ),
 
