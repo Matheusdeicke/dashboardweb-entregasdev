@@ -2,11 +2,12 @@ import 'package:dashboard_entregasdev/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class DashboardSection extends StatelessWidget {
-  const DashboardSection({super.key});
+  final Stream<int> entregadoresOnlineStream;
+
+  const DashboardSection({super.key, required this.entregadoresOnlineStream});
 
   @override
   Widget build(BuildContext context) {
-
     return Container(
       color: AppColors.bgColor,
       padding: const EdgeInsets.all(32.0),
@@ -18,20 +19,32 @@ class DashboardSection extends StatelessWidget {
             children: [
               Text(
                 "DASHBOARD",
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400, color: AppColors.cinza, letterSpacing: 1.2),
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w400,
+                  color: AppColors.cinza,
+                  letterSpacing: 1.2,
+                ),
               ),
             ],
           ),
-          
+
           const SizedBox(height: 40),
 
           Row(
             children: [
-              _cardStats(
-                title: "Entregadores online",
-                value: "1",
-                cardColor: AppColors.cardColor,
-                textColor: AppColors.cinza,
+              StreamBuilder<int>(
+                stream: entregadoresOnlineStream,
+                initialData: 0,
+                builder: (context, snapshot) {
+                  final online = snapshot.data ?? 0;
+                  return _cardStats(
+                    title: "Entregadores online",
+                    value: online.toString(),
+                    cardColor: AppColors.cardColor,
+                    textColor: AppColors.cinza,
+                  );
+                },
               ),
               const SizedBox(width: 20),
               _cardStats(
@@ -49,14 +62,14 @@ class DashboardSection extends StatelessWidget {
             child: Text(
               "PEDIDOS EM ANDAMENTO",
               style: TextStyle(
-                fontSize: 16, 
-                fontWeight: FontWeight.bold, 
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
                 color: AppColors.cinza,
-                letterSpacing: 0.5
+                letterSpacing: 0.5,
               ),
             ),
           ),
-          
+
           const SizedBox(height: 20),
 
           Expanded(
@@ -69,10 +82,15 @@ class DashboardSection extends StatelessWidget {
                 childAspectRatio: 2,
               ),
               itemBuilder: (context, index) {
-                return _cardPedidos(index, AppColors.cardColor, AppColors.cinza, AppColors.cinza);
+                return _cardPedidos(
+                  index,
+                  AppColors.cardColor,
+                  AppColors.cinza,
+                  AppColors.cinza,
+                );
               },
             ),
-          )
+          ),
         ],
       ),
     );
@@ -99,7 +117,10 @@ class DashboardSection extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(title, style: TextStyle(color: Colors.grey[500], fontSize: 14)),
+              Text(
+                title,
+                style: TextStyle(color: Colors.grey[500], fontSize: 14),
+              ),
               Icon(Icons.arrow_outward, size: 16, color: Colors.grey[500]),
             ],
           ),
@@ -107,7 +128,11 @@ class DashboardSection extends StatelessWidget {
             alignment: Alignment.bottomRight,
             child: Text(
               value,
-              style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold, color: textColor),
+              style: TextStyle(
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+                color: textColor,
+              ),
             ),
           ),
         ],
@@ -115,7 +140,12 @@ class DashboardSection extends StatelessWidget {
     );
   }
 
-  Widget _cardPedidos(int index, Color cardColor, Color textColor, Color subTextColor) {
+  Widget _cardPedidos(
+    int index,
+    Color cardColor,
+    Color textColor,
+    Color subTextColor,
+  ) {
     return Container(
       decoration: BoxDecoration(
         color: cardColor,
@@ -140,7 +170,7 @@ class DashboardSection extends StatelessWidget {
               ),
             ),
           ),
-          
+
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(16.0),

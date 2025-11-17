@@ -1,3 +1,4 @@
+import 'package:dashboard_entregasdev/core/entregadores/entregadores_page.dart';
 import 'package:dashboard_entregasdev/core/home/dashboard_section.dart';
 import 'package:dashboard_entregasdev/core/home/home_controller.dart';
 import 'package:dashboard_entregasdev/theme/app_colors.dart';
@@ -13,14 +14,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final controller = Modular.get<HomeController>();
+  late final HomeController controller;
+  late final List<Widget> _pages;
   int _selectedIndex = 0;
 
-  final List<Widget> _pages = [
-    const DashboardSection(),
-    const Center(child: Text('Lista de Entregadores')),
-    const Center(child: Text('Minhas Solicitações')),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    controller = Modular.get<HomeController>();
+
+    _pages = [
+      DashboardSection(
+        entregadoresOnlineStream: controller.entregadoresOnlineStream,
+      ),
+      const EntregadoresPage(),
+      const Center(
+        child: Text(
+          'Minhas Solicitações',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+    ];
+  }
 
   void _logout() async {
     await controller.logout();
@@ -42,7 +57,6 @@ class _HomePageState extends State<HomePage> {
             },
             onLogout: _logout,
           ),
-          
           Expanded(
             child: Container(
               decoration: BoxDecoration(
@@ -57,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                 children: _pages,
               ),
             ),
-          )
+          ),
         ],
       ),
     );
