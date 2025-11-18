@@ -54,7 +54,7 @@ class _MapaSelecaoDialogState extends State<MapaSelecaoDialog> {
                           TileLayer(
                             urlTemplate:
                                 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                            userAgentPackageName: 'com.example.app',
+                            userAgentPackageName: 'dashboard_entregasdev',
                           ),
                           if (_selecionado != null)
                             MarkerLayer(

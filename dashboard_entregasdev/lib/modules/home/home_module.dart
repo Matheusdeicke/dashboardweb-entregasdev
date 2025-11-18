@@ -6,6 +6,7 @@ import 'package:dashboard_entregasdev/core/entregadores/services/entregadores_se
 import 'package:dashboard_entregasdev/core/home/home_controller.dart';
 import 'package:dashboard_entregasdev/core/home/home_page.dart';
 import 'package:dashboard_entregasdev/core/home/service/presence_service.dart';
+import 'package:dashboard_entregasdev/core/solicitacoes/services/solicitacoes_service.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter_modular/flutter_modular.dart';
@@ -18,10 +19,18 @@ class HomeModule extends Module {
   void binds(i) {
     i.add<AuthService>(() => AuthService(i.get<FirebaseAuth>()));
 
-    i.addLazySingleton<HomeController>(
-      () => HomeController(i.get<AuthService>(), i.get<PresenceService>()),
+    i.addLazySingleton<SolicitacoesService>(
+      () => SolicitacoesService(i.get<FirebaseFirestore>()),
     );
 
+    i.addLazySingleton<HomeController>(
+      () => HomeController(
+        i.get<AuthService>(),
+        i.get<PresenceService>(),
+        i.get<SolicitacoesService>(),
+      ),
+    );
+    
     i.addLazySingleton<EntregadoresService>(
       () => EntregadoresService(
         i.get<FirebaseFirestore>(),

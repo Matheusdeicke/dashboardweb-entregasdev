@@ -17,28 +17,26 @@ class EntregadoresService {
 
     final rtStream = _database.ref('presence/entregadores').onValue;
 
-    return Rx.combineLatest2(
-      fsStream,
-      rtStream,
-      (QuerySnapshot<Map<String, dynamic>> snap, DatabaseEvent event) {
-        final presenceMap = event.snapshot.value as Map? ?? {};
+    return Rx.combineLatest2(fsStream, rtStream, (
+      QuerySnapshot<Map<String, dynamic>> snap,
+      DatabaseEvent event,
+    ) {
+      final presenceMap = event.snapshot.value as Map? ?? {};
 
-        return snap.docs.map((doc) {
-          final data = doc.data();
+      return snap.docs.map((doc) {
+        final data = doc.data();
 
-          final presence = presenceMap[doc.id] as Map<dynamic, dynamic>?;
+        final presence = presenceMap[doc.id] as Map<dynamic, dynamic>?;
+        final bool isOnline = presence?['state'] == 'online';
 
-          final bool isOnline = presence?['state'] == 'online';
-
-          return EntregadoresModel(
-            id: doc.id,
-            nome: data['nome'] ?? 'Sem nome',
-            localizacao: data['localizacao'] ?? '-',
-            statusFirestore: data['status'] ?? 'indefinido',
-            online: isOnline,
-          );
-        }).toList();
-      },
-    );
+        return EntregadoresModel(
+          id: doc.id,
+          nome: data['nome'] ?? 'Sem nome',
+          localizacao: data['localizacao'] ?? '-',
+          statusFirestore: data['status'] ?? 'disponivel',
+          online: isOnline,
+        );
+      }).toList();
+    });
   }
 }

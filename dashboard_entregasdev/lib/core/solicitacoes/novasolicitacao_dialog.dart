@@ -1,6 +1,8 @@
 import 'package:dashboard_entregasdev/core/solicitacoes/services/location_service.dart';
 import 'package:dashboard_entregasdev/theme/app_colors.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'models/loc_model.dart';
 import 'map.dart';
@@ -14,8 +16,9 @@ class NovaSolicitacaoDialog extends StatefulWidget {
 
 class _NovaSolicitacaoDialogState extends State<NovaSolicitacaoDialog> {
   final TextEditingController _localizacaoController = TextEditingController();
-  
+  final _auth = FirebaseAuth.instance;
   final LocationService _locationService = LocationService();
+  final _firestore = FirebaseFirestore.instance;
 
   double? _lat;
   double? _lon;
@@ -74,7 +77,13 @@ class _NovaSolicitacaoDialogState extends State<NovaSolicitacaoDialog> {
                     vertical: 14,
                   ),
                   suffixIcon: _buscandoEndereco
-                      ? Transform.scale(scale: 0.5, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.cinza))
+                      ? Transform.scale(
+                          scale: 0.5,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.cinza,
+                          ),
+                        )
                       : Icon(Icons.map, color: AppColors.cinza),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(999),
@@ -155,8 +164,7 @@ class _NovaSolicitacaoDialogState extends State<NovaSolicitacaoDialog> {
         _lat = result.lat;
         _lon = result.lon;
         _buscandoEndereco = true;
-        _localizacaoController.text =
-            'Buscando endereço...';
+        _localizacaoController.text = 'Buscando endereço...';
       });
 
       print('Coordenadas selecionadas: Lat ${result.lat}, Lon ${result.lon}');
@@ -183,16 +191,34 @@ class _NovaSolicitacaoDialogState extends State<NovaSolicitacaoDialog> {
       return;
     }
 
+    final uid = _auth.currentUser?.uid;
+    if (uid == null) {
+      setState(() {
+        _erro = 'Sessão expirada. Faça login novamente.';
+      });
+      return;
+    }
+
     setState(() {
       _salvando = true;
       _erro = null;
     });
 
     try {
+      final userDoc = await _firestore.collection('users').doc(uid).get();
+      final userData = userDoc.data();
+
+      if (userData == null || userData['loja_id'] == null) {
+        throw Exception('loja_id não configurado para este usuário');
+      }
+
+      final String lojaId = userData['loja_id'] as String;
+
       await _locationService.salvarSolicitacao(
         lat: _lat!,
         lon: _lon!,
         enderecoCompleto: _localizacaoController.text,
+        lojaId: lojaId,
       );
 
       if (mounted) {
@@ -201,7 +227,7 @@ class _NovaSolicitacaoDialogState extends State<NovaSolicitacaoDialog> {
     } catch (e) {
       if (mounted) {
         setState(() {
-          _erro = 'Erro ao salvar solicitação. Tente novamente.';
+          _erro = 'Erro ao salvar solicitação. Detalhe: $e';
           _salvando = false;
         });
       }

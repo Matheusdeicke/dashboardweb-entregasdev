@@ -24,9 +24,9 @@ class EntregadoresModel {
       case 'disponivel':
         return 'Disponível';
       case 'em_coleta':
-        return 'Em coleta';
+        return 'A caminho da loja';
       case 'em_entrega':
-        return 'Em entrega';
+        return 'A caminho do cliente';
       default:
         return '';
     }

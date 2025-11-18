@@ -65,6 +65,7 @@ class LocationService {
     required double lat,
     required double lon,
     required String enderecoCompleto,
+    required String lojaId,
   }) async {
     try {
       await _firestore.collection('solicitacoes').add({
@@ -72,6 +73,7 @@ class LocationService {
         'endereco_texto': enderecoCompleto,
         'data_criacao': FieldValue.serverTimestamp(),
         'status': 'pendente',
+        'loja_id': lojaId,
       });
     } catch (e) {
       throw Exception('Erro ao salvar solicitação: $e');

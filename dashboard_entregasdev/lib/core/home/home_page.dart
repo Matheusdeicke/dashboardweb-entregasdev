@@ -26,7 +26,9 @@ class _HomePageState extends State<HomePage> {
 
     _pages = [
       DashboardSection(
-        entregadoresOnlineStream: controller.entregadoresOnlineStream,
+      entregadoresOnlineStream: controller.entregadoresOnlineStream,
+      totalSolicitacoesStream: controller.totalSolicitacoesStream,
+      pedidosEmAndamentoStream: controller.pedidosEmAndamentoStream,
       ),
       const EntregadoresPage(),
       const SolicitacoesPage(),

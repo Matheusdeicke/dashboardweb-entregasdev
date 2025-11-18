@@ -1,10 +1,18 @@
+import 'package:dashboard_entregasdev/core/solicitacoes/models/solicitacao_model.dart';
 import 'package:dashboard_entregasdev/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class DashboardSection extends StatelessWidget {
   final Stream<int> entregadoresOnlineStream;
+  final Stream<int> totalSolicitacoesStream;
+  final Stream<List<SolicitacaoModel>> pedidosEmAndamentoStream;
 
-  const DashboardSection({super.key, required this.entregadoresOnlineStream});
+  const DashboardSection({
+    super.key,
+    required this.entregadoresOnlineStream,
+    required this.totalSolicitacoesStream,
+    required this.pedidosEmAndamentoStream,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -32,10 +40,7 @@ class DashboardSection extends StatelessWidget {
                   letterSpacing: 1.2,
                 ),
               ),
-            Icon( Icons.dashboard,
-                color: AppColors.cinza,
-                size: 28,
-              ),
+              Icon(Icons.dashboard, color: AppColors.cinza, size: 28),
             ],
           ),
 
@@ -57,11 +62,18 @@ class DashboardSection extends StatelessWidget {
                 },
               ),
               const SizedBox(width: 20),
-              _cardStats(
-                title: "Meus pedidos",
-                value: "1",
-                cardColor: AppColors.cardColor,
-                textColor: AppColors.cinza,
+              StreamBuilder<int>(
+                stream: totalSolicitacoesStream,
+                initialData: 0,
+                builder: (context, snapshot) {
+                  final total = snapshot.data ?? 0;
+                  return _cardStats(
+                    title: "Total de solicitações",
+                    value: total.toString(),
+                    cardColor: AppColors.cardColor,
+                    textColor: AppColors.cinza,
+                  );
+                },
               ),
             ],
           ),
@@ -83,20 +95,41 @@ class DashboardSection extends StatelessWidget {
           const SizedBox(height: 20),
 
           Expanded(
-            child: GridView.builder(
-              itemCount: 1,
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                crossAxisSpacing: 20,
-                mainAxisSpacing: 20,
-                childAspectRatio: 2,
-              ),
-              itemBuilder: (context, index) {
-                return _cardPedidos(
-                  index,
-                  AppColors.cardColor,
-                  AppColors.cinza,
-                  AppColors.cinza,
+            child: StreamBuilder<List<SolicitacaoModel>>(
+              stream: pedidosEmAndamentoStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                }
+
+                final pedidos = snapshot.data ?? [];
+
+                if (pedidos.isEmpty) {
+                  return Center(
+                    child: Text(
+                      "Nenhum pedido em andamento",
+                      style: TextStyle(color: AppColors.cinza),
+                    ),
+                  );
+                }
+
+                return GridView.builder(
+                  itemCount: pedidos.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    crossAxisSpacing: 20,
+                    mainAxisSpacing: 20,
+                    childAspectRatio: 2,
+                  ),
+                  itemBuilder: (context, index) {
+                    final pedido = pedidos[index];
+                    return _cardPedidos(
+                      pedido,
+                      AppColors.cardColor,
+                      AppColors.cinza,
+                      AppColors.cinza,
+                    );
+                  },
                 );
               },
             ),
@@ -151,11 +184,40 @@ class DashboardSection extends StatelessWidget {
   }
 
   Widget _cardPedidos(
-    int index,
+    SolicitacaoModel pedido,
     Color cardColor,
     Color textColor,
     Color subTextColor,
   ) {
+    final entregador = pedido.entregadorNome ?? 'O entregador';
+
+    String linha1;
+    switch (pedido.status) {
+      case 'em_coleta':
+        linha1 = '$entregador está a caminho da loja';
+        break;
+      case 'em_entrega':
+        linha1 = '$entregador está a caminho do cliente';
+        break;
+      case 'finalizada':
+        linha1 = '$entregador finalizou a entrega';
+        break;
+      default:
+        linha1 = 'Aguardando entregador aceitar a solicitação';
+    }
+
+    final double distanciaKm = pedido.distanciaKm ?? 12.0;
+    final bool indoParaLoja = pedido.status == 'em_coleta';
+    final String destinoTexto = indoParaLoja
+        ? 'para o entregador chegar na loja'
+        : 'para o entregador chegar no cliente';
+
+    final String linha2 = '${distanciaKm.toStringAsFixed(1)} km $destinoTexto';
+
+    final String endereco = (pedido.enderecoTexto.isEmpty
+        ? 'Endereço não informado'
+        : pedido.enderecoTexto);
+
     return Container(
       decoration: BoxDecoration(
         color: cardColor,
@@ -175,8 +237,10 @@ class DashboardSection extends StatelessWidget {
             ),
             child: Center(
               child: Text(
-                "Local de entrega - Germânia",
+                _extrairRua(endereco),
                 style: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ),
@@ -188,21 +252,35 @@ class DashboardSection extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Text(
-                    "João está no processo de coleta",
+                    linha1,
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: subTextColor, fontSize: 13),
+                    style: TextStyle(
+                      color: subTextColor,
+                      fontSize: 13,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const SizedBox(height: 8),
+
                   Text(
-                    "12 km para o entregador chegar na loja",
+                    linha2,
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: subTextColor, fontSize: 13),
+                    style: TextStyle(
+                      color: subTextColor.withOpacity(0.8),
+                      fontSize: 12,
+                    ),
                   ),
                   const SizedBox(height: 12),
+
                   Text(
-                    "Rua Professor Prudente, 518",
+                    endereco,
                     textAlign: TextAlign.center,
-                    style: TextStyle(color: subTextColor, fontSize: 13),
+                    style: TextStyle(
+                      color: subTextColor.withOpacity(0.9),
+                      fontSize: 12,
+                    ),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                 ],
               ),
@@ -211,5 +289,21 @@ class DashboardSection extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  String _extrairRua(String endereco) {
+    final partes = endereco.split(',');
+    return partes.isNotEmpty ? partes.first : endereco;
+  }
+
+  String statusLegivel(String status) {
+    switch (status) {
+      case 'em_coleta':
+        return 'A caminho da loja';
+      case 'em_entrega':
+        return 'A caminho do cliente';
+      default:
+        return status;
+    }
   }
 }
