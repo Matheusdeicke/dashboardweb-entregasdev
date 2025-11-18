@@ -167,7 +167,7 @@ class EntregadoresPage extends StatelessWidget {
                                       child: Text(
                                         e.status,
                                         style: TextStyle(
-                                          color: _statusColor(e.status),
+                                          color: e.statusColor,
                                           fontSize: 13,
                                           fontWeight: FontWeight.w500,
                                         ),
