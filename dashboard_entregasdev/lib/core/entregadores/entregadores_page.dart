@@ -191,7 +191,7 @@ class EntregadoresPage extends StatelessWidget {
     );
   }
 
-  Color _statusColor(String status) {
+  Color statusColor(String status) {
     switch (status.toUpperCase()) {
       case 'DISPONÍVEL':
         return Colors.greenAccent;
