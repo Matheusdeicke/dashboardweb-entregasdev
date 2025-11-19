@@ -15,28 +15,63 @@ class EntregadoresService {
         .where('role', isEqualTo: 'entregador')
         .snapshots();
 
-    final rtStream = _database.ref('presence/entregadores').onValue;
+    final presenceStream = _database.ref('presence/entregadores').onValue;
+    final locationStream = _database.ref('entregadores_localizacao').onValue;
 
-    return Rx.combineLatest2(fsStream, rtStream, (
-      QuerySnapshot<Map<String, dynamic>> snap,
-      DatabaseEvent event,
-    ) {
-      final presenceMap = event.snapshot.value as Map? ?? {};
+    return Rx.combineLatest3(
+      fsStream,
+      presenceStream,
+      locationStream,
+      (
+        QuerySnapshot<Map<String, dynamic>> snap,
+        DatabaseEvent presenceEvent,
+        DatabaseEvent locationEvent,
+      ) {
+        final rawPresence = presenceEvent.snapshot.value;
+        final rawLocation = locationEvent.snapshot.value;
 
-      return snap.docs.map((doc) {
-        final data = doc.data();
+        final presenceMap = rawPresence is Map ? rawPresence : <dynamic, dynamic>{};
+        final locationMap = rawLocation is Map ? rawLocation : <dynamic, dynamic>{};
 
-        final presence = presenceMap[doc.id] as Map<dynamic, dynamic>?;
-        final bool isOnline = presence?['state'] == 'online';
+        return snap.docs.map((doc) {
+          final data = doc.data();
 
-        return EntregadoresModel(
-          id: doc.id,
-          nome: data['nome'] ?? 'Sem nome',
-          localizacao: data['localizacao'] ?? '-',
-          statusFirestore: data['status'] ?? 'disponivel',
-          online: isOnline,
-        );
-      }).toList();
-    });
+          final presence = presenceMap[doc.id] as Map<dynamic, dynamic>?;
+          final bool isOnline = presence?['state'] == 'online';
+
+          final loc = locationMap[doc.id] as Map<dynamic, dynamic>?;
+
+          String localizacaoTexto;
+
+          if (loc != null) {
+            final rua = loc['rua'] as String?;
+            if (rua != null && rua.trim().isNotEmpty) {
+              localizacaoTexto = rua;
+            } 
+            else if (loc['lat'] != null && loc['lon'] != null) {
+              final lat = (loc['lat'] as num).toDouble();
+              final lon = (loc['lon'] as num).toDouble();
+              localizacaoTexto =
+                  '${lat.toStringAsFixed(5)}, ${lon.toStringAsFixed(5)}';
+            } 
+            else {
+              localizacaoTexto = data['localizacao'] ?? '-';
+            }
+          } else {
+            localizacaoTexto = data['localizacao'] ?? '-';
+          }
+
+          final String statusEntrega = data['status'] ?? 'disponivel';
+
+          return EntregadoresModel(
+            id: doc.id,
+            nome: data['nome'] ?? 'Sem nome',
+            localizacao: localizacaoTexto,
+            statusFirestore: statusEntrega,
+            online: isOnline,
+          );
+        }).toList();
+      },
+    );
   }
 }

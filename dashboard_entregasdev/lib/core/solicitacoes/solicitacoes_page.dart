@@ -1,11 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dashboard_entregasdev/theme/app_colors.dart';
 import 'package:flutter/material.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dashboard_entregasdev/core/solicitacoes/novasolicitacao_dialog.dart';
-import 'package:dashboard_entregasdev/theme/app_colors.dart';
-import 'package:flutter/material.dart';
 
 class SolicitacoesPage extends StatefulWidget {
   const SolicitacoesPage({super.key});
