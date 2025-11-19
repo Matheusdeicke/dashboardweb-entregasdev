@@ -6,8 +6,10 @@ class LocationService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<String> transformarCoordenadasEmEndereco(double lat, double lon) async {
-    if (lat == 0 && lon == 0) return 'Coordenadas inválidas';
-
+    if (lat == 0 && lon == 0) {
+      return 'Coordenadas inválidas';
+    }
+    
     final url = Uri.parse(
       'https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lon&zoom=18&addressdetails=1',
     );

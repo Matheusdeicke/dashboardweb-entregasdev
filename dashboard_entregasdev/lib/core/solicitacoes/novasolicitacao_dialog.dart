@@ -167,8 +167,6 @@ class _NovaSolicitacaoDialogState extends State<NovaSolicitacaoDialog> {
         _localizacaoController.text = 'Buscando endereço...';
       });
 
-      print('Coordenadas selecionadas: Lat ${result.lat}, Lon ${result.lon}');
-
       String endereco = await _locationService.transformarCoordenadasEmEndereco(
         result.lat,
         result.lon,

@@ -25,6 +25,7 @@ class SolicitacoesService {
           final List<SolicitacaoModel> result = [];
 
           for (final doc in snap.docs) {
+            // Dados e Loc do Cliente
             final data = doc.data() as Map<String, dynamic>;
             final GeoPoint localizacaoCliente = data['localizacao'] as GeoPoint;
 

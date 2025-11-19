@@ -206,7 +206,7 @@ class DashboardSection extends StatelessWidget {
         linha1 = 'Aguardando entregador aceitar a solicitação';
     }
 
-    final double distanciaKm = pedido.distanciaKm ?? 12.0;
+    final double distanciaKm = pedido.distanciaKm ?? 8.0;
     final bool indoParaLoja = pedido.status == 'em_coleta';
     final String destinoTexto = indoParaLoja
         ? 'para o entregador chegar na loja'
