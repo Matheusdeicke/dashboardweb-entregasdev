@@ -11,10 +11,11 @@ Um sistema web desenvolvido para **complementar** o aplicativo flutter Entregas 
 - **Solicitações** de pedidos, sendo possivel criar novas solicitações, onde o entregador vai receber no aplicativo.
 
 ## Tecnologias Utilizadas
+| Componente | Descrição |
 |-------------|------------|
 | **Dart**    | Linguagem principal do projeto |
 | **Flutter** | Framework principal do projeto |
 | **Firebase Authentication** | Login de usuários via e-mail/senha |
 | **Firebase Database** | Banco de dados utilizado para salvar solicitações, lojas cadastradas, usuários. |
 | **Realtime Database** | Banco de dados utilizado para obter o status do entregar, se ele esta online ou offline no aplicativo |
-|-------------|------------|
+
