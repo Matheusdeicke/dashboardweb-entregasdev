@@ -1,6 +1,6 @@
 # Dashboard Dev - Entregas Dev
 
-Um sistema web desenvolvido para **complementar** o aplicativo flutter Entregas Dev.
+Um sistema web desenvolvido em **Flutter** utilizando **Flutter Modular** para **complementar** o aplicativo flutter Entregas Dev.
 
 ---
 
