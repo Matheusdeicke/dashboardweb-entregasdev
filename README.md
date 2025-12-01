@@ -17,5 +17,5 @@ Um sistema web desenvolvido para **complementar** o aplicativo flutter Entregas 
 | **Flutter** | Framework principal do projeto |
 | **Firebase Authentication** | Login de usuários via e-mail/senha |
 | **Firebase Database** | Banco de dados utilizado para salvar solicitações, lojas cadastradas, usuários. |
-| **Realtime Database** | Banco de dados utilizado para obter o status do entregar, se ele esta online ou offline no aplicativo |
+| **Realtime Database** | Banco de dados utilizado para obter o status do entregador, se ele esta online ou offline no aplicativo, o dashboard ira **contabilizar** quantos entregadores estão com o aplicativo aberto |
 
